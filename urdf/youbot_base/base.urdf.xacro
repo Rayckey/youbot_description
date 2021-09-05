@@ -5,8 +5,8 @@
        xmlns:xacro="http://ros.org/wiki/xacro">
  
   <!-- sensors -->
-  <xacro:include filename="$(find youbot_description)/urdf/youbot_base/base.gazebo.xacro"/>
-  <xacro:include filename="$(find youbot_description)/urdf/youbot_base/base.transmission.xacro"/>
+  <!-- <xacro:include filename="$(find youbot_description)/urdf/youbot_base/base.gazebo.xacro"/> -->
+  <!-- <xacro:include filename="$(find youbot_description)/urdf/youbot_base/base.transmission.xacro"/> -->
   
   <!-- simplified box collision geometry for base -->
   <property name="base_size_x" value="0.570"/>
@@ -287,8 +287,8 @@
     </link>
 
     <!-- extensions -->
-    <xacro:youbot_base_gazebo/>
-    <xacro:youbot_base_transmission/>
+    <!-- <xacro:youbot_base_gazebo/> -->
+    <!-- <xacro:youbot_base_transmission/> -->
 
   </xacro:macro>
 </robot>

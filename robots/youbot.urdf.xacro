@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
 <robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
-       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
-       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
-       xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
-       name="youbot" >
-  
+  xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+  xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+  xmlns:xacro="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface" name="youbot">
+
   <!-- The following xacro:included files set up definitions of parts of the robot body -->
   <!-- misc common stuff? -->
   <xacro:include filename="$(find youbot_description)/urdf/common.xacro" />
@@ -13,23 +12,23 @@
   <xacro:include filename="$(find youbot_description)/urdf/youbot_base/base.urdf.xacro" />
 
   <!-- youbot plate -->
-  <xacro:include filename="$(find youbot_description)/urdf/youbot_plate/plate.urdf.xacro" /> 
+  <xacro:include filename="$(find youbot_description)/urdf/youbot_plate/plate.urdf.xacro" />
 
   <!-- youbot arm -->
   <xacro:include filename="$(find youbot_description)/urdf/youbot_arm/arm.urdf.xacro"/>
 
   <!-- youbot gripper -->
-  <xacro:include filename="$(find youbot_description)/urdf/youbot_gripper/gripper.urdf.xacro" />
- 
+  <!-- <xacro:include filename="$(find youbot_description)/urdf/youbot_gripper/gripper.urdf.xacro" /> -->
+
   <!-- controller manager -->
-  <xacro:include filename="$(find youbot_description)/controller/ros_controller.urdf.xacro" />
-  
+  <!-- <xacro:include filename="$(find youbot_description)/controller/ros_controller.urdf.xacro" /> -->
+
   <!-- materials for visualization -->
-  <xacro:include filename="$(find youbot_description)/urdf/materials.urdf.xacro" />
+  <!-- <xacro:include filename="$(find youbot_description)/urdf/materials.urdf.xacro" /> -->
 
   <!-- sensors -->
-  <xacro:include filename="$(find youbot_description)/urdf/sensors/hokuyo_urg04_laser.urdf.xacro"/>
-						     
+  <!-- <xacro:include filename="$(find youbot_description)/urdf/sensors/hokuyo_urg04_laser.urdf.xacro"/> -->
+
   <!-- Now we can start using the macros xacro:included above to define the actual youbot -->
 
   <!-- The first use of a macro.  This one was defined in base.urdf.xacro above.
@@ -51,14 +50,80 @@
     <origin xyz="0.143 0 0.046" rpy="0 0 0" />
   </xacro:youbot_arm>
 
-  <xacro:youbot_gripper name="gripper" parent="arm_link_5">
+  <!-- <xacro:youbot_gripper name="gripper" parent="arm_link_5">
     <origin xyz="0 0 0" rpy="0 0 0" />
-  </xacro:youbot_gripper>
+  </xacro:youbot_gripper> -->
 
   <!-- base laser front -->
-  <xacro:hokuyo_urg04_laser name="base_laser_front" parent="base" ros_topic="base_scan" update_rate="10" min_angle="-1.57" max_angle="1.57">
+  <!-- <xacro:hokuyo_urg04_laser name="base_laser_front" parent="base" ros_topic="base_scan" update_rate="10" min_angle="-1.57" max_angle="1.57">
     <origin xyz="0.3 0 -0.03" rpy="0 0 0"/>
-  </xacro:hokuyo_urg04_laser>
+  </xacro:hokuyo_urg04_laser> -->
 
-  
+  <!-- Virtual Link Starts -->
+  <link name="virtual_base_x">
+
+  </link>
+
+  <link name="virtual_base_y">
+
+  </link>
+
+  <link name="virtual_base_theta">
+
+  </link>
+
+
+
+  <joint name="ee_fixed_joint" type="fixed">
+    <parent link="arm_link_5" />
+    <child link = "ee_link" />
+    <origin xyz="0 0.0 0.05" rpy="0.0 ${pi/2.0} 0.0" />
+  </joint>
+
+  <link name="ee_link">
+    <visual>
+      <geometry>
+        <box size="0.1 0.01 0.01"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0.05 0 0"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="0.1 0.01 0.01"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0.05 0 0"/>
+    </collision>
+
+    <material name="LightGrey">
+      <color rgba="0.7 0.7 0.7 1.0"/>
+    </material>
+  </link>
+
+
+  <joint name="base_link_base_theta" type="revolute">
+    <parent link="virtual_base_theta" />
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+    <child link="base_footprint" />
+    <axis xyz="0 0 1"/>
+    <limit effort="20" velocity="5.0" lower="-3.14" upper="3.14"/>
+  </joint>
+
+  <joint name="base_theta_base_y" type="prismatic">
+    <parent link="virtual_base_y" />
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+    <child link="virtual_base_theta" />
+    <axis xyz="0 1 0"/>
+    <limit effort="20" velocity="5.0" lower="-10" upper="10"/>
+  </joint>
+
+  <joint name="base_y_base_x" type="prismatic">
+    <parent link="virtual_base_x" />
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+    <child link="virtual_base_y" />
+    <axis xyz="1 0 0"/>
+    <limit effort="20" velocity="5.0" lower="-10" upper="10"/>
+  </joint>
+
+
 </robot>
